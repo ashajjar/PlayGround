@@ -36,8 +36,8 @@ object Viewer {
     }
 
     private fun initViewer() {
-        columns = 120 //windowSize.ws_col
-        rows = 10 //windowSize.ws_row
+        columns = 120
+        rows = 10
     }
 
     private fun refreshScreen() {
@@ -103,8 +103,6 @@ object Viewer {
                 'H'.code -> HOME
                 'F'.code -> END
                 '0'.code, '1'.code, '2'.code, '3'.code, '4'.code, '5'.code, '6'.code, '7'.code, '8'.code, '9'.code -> {  // e.g: esc[5~ == page_up
-//                    val yetYetAnotherChar = System.`in`.read()
-//                    if (yetYetAnotherChar != '~'.code) yetYetAnotherChar
                     when (yetAnotherKey) {
                         '1'.code, '7'.code -> HOME
                         '3'.code -> DEL
@@ -182,7 +180,8 @@ object Viewer {
             exitProcess(rc)
         }
         originalAttributes = StandardC.Termios.of(termios)
-        termios.c_lflag = termios.c_lflag and (StandardC.ECHO or StandardC.ICANON or StandardC.IEXTEN or StandardC.ISIG).inv()
+        termios.c_lflag =
+            termios.c_lflag and (StandardC.ECHO or StandardC.ICANON or StandardC.IEXTEN or StandardC.ISIG).inv()
         termios.c_iflag = termios.c_iflag and (StandardC.IXON or StandardC.ICRNL).inv()
         termios.c_oflag = termios.c_oflag and StandardC.OPOST.inv()
 
