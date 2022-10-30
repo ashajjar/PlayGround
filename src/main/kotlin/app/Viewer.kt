@@ -1,7 +1,6 @@
 package app
 
 import lib.StandardC
-import lib.StandardC.Winsize
 import java.io.IOException
 import kotlin.math.max
 import kotlin.system.exitProcess
@@ -37,7 +36,6 @@ object Viewer {
     }
 
     private fun initViewer() {
-        val windowSize: Winsize = windowSize
         columns = 120 //windowSize.ws_col
         rows = 10 //windowSize.ws_row
     }
@@ -55,7 +53,7 @@ object Viewer {
     }
 
     private fun resetScreen(builder: StringBuilder) {
-        builder.append("\u001b[2J");
+        builder.append("\u001b[2J")
     }
 
     private fun resetCursor(builder: StringBuilder) {
@@ -105,7 +103,7 @@ object Viewer {
                 'H'.code -> HOME
                 'F'.code -> END
                 '0'.code, '1'.code, '2'.code, '3'.code, '4'.code, '5'.code, '6'.code, '7'.code, '8'.code, '9'.code -> {  // e.g: esc[5~ == page_up
-                    val yetYetAnotherChar = System.`in`.read()
+//                    val yetYetAnotherChar = System.`in`.read()
 //                    if (yetYetAnotherChar != '~'.code) yetYetAnotherChar
                     when (yetAnotherKey) {
                         '1'.code, '7'.code -> HOME
@@ -119,7 +117,7 @@ object Viewer {
 
                 else -> yetAnotherKey
             }
-        } else { //if (nextKey == 'O') {  e.g. escpOH == HOME
+        } else {
             when (yetAnotherKey) {
                 'H'.code -> HOME
                 'F'.code -> END
@@ -130,9 +128,9 @@ object Viewer {
 
     private fun handleKey(key: Int) {
         if (key == 4) { //CTRL-D
-            exit();
+            exit()
         } else if (arrayListOf(ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, HOME, END).contains(key)) {
-            moveCursor(key);
+            moveCursor(key)
         } else {
             statusMessage = "$key  -> (${key.toChar()})"
         }
@@ -188,19 +186,6 @@ object Viewer {
         termios.c_iflag = termios.c_iflag and (StandardC.IXON or StandardC.ICRNL).inv()
         termios.c_oflag = termios.c_oflag and StandardC.OPOST.inv()
 
-        /* termios.c_cc[lib.LibC.VMIN] = 0;
-        termios.c_cc[lib.LibC.VTIME] = 1;*/
         StandardC.INSTANCE.tcsetattr(StandardC.SYSTEM_OUT_FD, StandardC.TCSAFLUSH, termios)
     }
-
-    private val windowSize: Winsize
-        get() {
-            val winsize = Winsize()
-            val rc = StandardC.INSTANCE.ioctl(StandardC.SYSTEM_OUT_FD, StandardC.TIOCGWINSZ, winsize)
-            if (rc != 0) {
-                System.err.println("ioctl failed with return code[={}]$rc")
-                exitProcess(1)
-            }
-            return winsize
-        }
 }
