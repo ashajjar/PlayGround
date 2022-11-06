@@ -1,6 +1,7 @@
 # PlayGround
 
-[Demo](https://user-images.githubusercontent.com/2855050/200191584-91a20430-dc71-4754-9059-b33e1fa79cfb.webm)
+![Demo](https://user-images.githubusercontent.com/2855050/200191850-3e99c5c4-7440-4a3f-800d-cce61c86babe.gif)
+
 
 ## Build
 
