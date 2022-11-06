@@ -20,8 +20,8 @@ class View {
         const val PAGE_UP = 1006
         const val PAGE_DOWN = 1007
         const val DEL = 1008
-        var ROWS: Short = 20
-        var COLUMNS: Short = 120
+        const val ROWS: Short = 20
+        const val COLUMNS: Short = 120
     }
 
     private var originalAttributes: StandardC.Termios? = null
