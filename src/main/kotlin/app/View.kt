@@ -25,8 +25,6 @@ class View {
     }
 
     private var originalAttributes: StandardC.Termios? = null
-    private var cursorX = 0
-    private var cursorY = 1
 
     private var statusMessage = ""
 
@@ -34,6 +32,8 @@ class View {
     private var goldBag: List<GoldCoin> = mutableListOf()
 
     private var lastObjectTime: Instant = Instant.now()
+
+    private var missed = 0
 
     fun render() {
         val builder = StringBuilder()
@@ -44,7 +44,6 @@ class View {
         moveObjects()
         drawFrame(builder)
         drawStatusBar(builder)
-        drawCursor(builder)
 
         print(builder)
     }
@@ -62,6 +61,7 @@ class View {
     private fun moveObjects() {
         goldBag.forEach {
             if (!it.move()) {
+                missed++
                 goldBag = goldBag - it
             }
 
@@ -75,10 +75,6 @@ class View {
     private fun resetCursor(builder: StringBuilder) {
         builder.append("\u001b[H")
         builder.append("\u001b[?25l")
-    }
-
-    private fun drawCursor(builder: StringBuilder) {
-        builder.append("\u001b[$cursorY;${cursorX + 1}H")
     }
 
     private fun drawFrame(builder: StringBuilder) {
@@ -100,12 +96,13 @@ class View {
 
     private fun drawStatusBar(builder: StringBuilder) {
         val statusMessage =
-            "Rows: ${ROWS}, Columns: $COLUMNS (X:$cursorX Y: $cursorY) Score=${player.score}"
+            "\u001B[42;1mScore=${player.score} \u001B[101;1mMissed=$missed"
         builder
             .append("\u001b[${ROWS + 1};1H")
             .append("\u001b[20;7m")
             .append(statusMessage)
-            .append(" ".repeat(max(0, COLUMNS - statusMessage.length)))
+            .append(" ".repeat(max(0, COLUMNS - statusMessage.length - 15)))
+            .append("\u001B[40m(EXIT = CTRL+D)")
             .append("\u001b[0m")
     }
 
