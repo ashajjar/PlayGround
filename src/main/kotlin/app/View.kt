@@ -1,7 +1,8 @@
 package app
 
-import app.objects.GoldCoin
+import app.objects.Thing
 import app.objects.Person
+import app.objects.ThingType
 import lib.StandardC
 import java.io.IOException
 import java.time.Instant
@@ -22,6 +23,7 @@ class View {
         const val DEL = 1008
         const val ROWS: Short = 20
         const val COLUMNS: Short = 120
+        const val GAME_OVER_THRESHOLD = 3
     }
 
     private var originalAttributes: StandardC.Termios? = null
@@ -29,7 +31,7 @@ class View {
     private var statusMessage = ""
 
     private var player: Person = Person(Position(2, 15), 0)
-    private var goldBag: List<GoldCoin> = mutableListOf()
+    private var thingsInView: List<Thing> = mutableListOf()
 
     private var lastObjectTime: Instant = Instant.now()
 
@@ -54,15 +56,22 @@ class View {
             return
         }
         val randomPosY = Random.nextInt(1, ROWS - 1)
-        goldBag = goldBag + GoldCoin(Position(118, randomPosY))
+        thingsInView =
+            thingsInView +
+                    Thing(
+                        Position(118, randomPosY),
+                        ThingType.randomType()
+                    )
         lastObjectTime = Instant.now()
     }
 
     private fun moveObjects() {
-        goldBag.forEach {
+        thingsInView.forEach {
             if (!it.move()) {
-                missed++
-                goldBag = goldBag - it
+                if (it.type == ThingType.GOOD) {
+                    missed++
+                }
+                thingsInView = thingsInView - it
             }
 
         }
@@ -89,7 +98,7 @@ class View {
         }
         player.draw(builder)
         player.drawName(builder, "ASH")
-        goldBag.forEach {
+        thingsInView.forEach {
             it.draw(builder)
         }
     }
@@ -186,11 +195,18 @@ class View {
     }
 
     fun countPoints() {
-        goldBag.forEach {
+        thingsInView.forEach {
             if (player.meets(it)) {
-                player.score(1)
-                goldBag = goldBag - it
+                player.score(it.worth)
+                print(it.worth)
+                // todo make sounds optional
+                // print("\u0007")
+                thingsInView = thingsInView - it
             }
         }
+    }
+
+    fun checkGameOver(): Boolean {
+        return missed >= GAME_OVER_THRESHOLD
     }
 }

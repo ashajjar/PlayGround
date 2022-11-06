@@ -10,18 +10,18 @@ class Main {
             val view = View()
             view.enableRawMode()
             thread {
-                while (true) {
+                while (!view.checkGameOver()) {
                     view.render()
                     Thread.sleep(50)
                 }
             }
             thread {
-                while (true) {
+                while (!view.checkGameOver()) {
                     view.countPoints()
                     Thread.sleep(50)
                 }
             }
-            while (true) {
+            while (!view.checkGameOver()) {
                 view.handleKey()
             }
         }

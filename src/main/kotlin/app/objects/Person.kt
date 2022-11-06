@@ -58,7 +58,7 @@ class Person(
             .append("\u001b[0m")
     }
 
-    fun meets(it: GoldCoin): Boolean {
+    fun meets(it: Thing): Boolean {
         if (it.position.posX <= position.posX + 2 && it.position.posX >= position.posX) {
             if (it.position.posY <= position.posY + 1 && it.position.posY >= position.posY - 1) {
                 return true
@@ -68,8 +68,8 @@ class Person(
         return false
     }
 
-    fun score(i: Int) {
-        score += i
+    fun score(worth: Int) {
+        score += worth
     }
 
     fun handleKey(key: Int) {
