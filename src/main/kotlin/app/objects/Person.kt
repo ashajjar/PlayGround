@@ -1,6 +1,7 @@
 package app.objects
 
 import app.Position
+import app.View
 import java.lang.StringBuilder
 
 class Person(
@@ -57,7 +58,7 @@ class Person(
             .append("\u001b[0m")
     }
 
-    fun meets(it: Box): Boolean {
+    fun meets(it: GoldCoin): Boolean {
         if (it.position.posX <= position.posX + 2 && it.position.posX >= position.posX) {
             if (it.position.posY <= position.posY + 1 && it.position.posY >= position.posY - 1) {
                 return true
@@ -69,6 +70,34 @@ class Person(
 
     fun score(i: Int) {
         score += i
+    }
+
+    fun handleKey(key: Int) {
+        when (key) {
+            View.ARROW_UP -> {
+                if (position.posY > 1) {
+                    position.posY--
+                }
+            }
+
+            View.ARROW_DOWN -> {
+                if (position.posY < View.ROWS - 1) {
+                    position.posY++
+                }
+            }
+
+            View.ARROW_LEFT -> {
+                if (position.posX > 2) {
+                    position.posX--
+                }
+            }
+
+            View.ARROW_RIGHT -> {
+                if (position.posX < View.COLUMNS - 1) {
+                    position.posX++
+                }
+            }
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package app
 
-import app.objects.Box
+import app.objects.GoldCoin
 import app.objects.Person
 import lib.StandardC
 import java.io.IOException
@@ -11,27 +11,27 @@ import kotlin.system.exitProcess
 
 class View {
     companion object {
-        private const val ARROW_UP = 1000
-        private const val ARROW_DOWN = 1001
-        private const val ARROW_LEFT = 1002
-        private const val ARROW_RIGHT = 1003
-        private const val HOME = 1004
-        private const val END = 1005
-        private const val PAGE_UP = 1006
-        private const val PAGE_DOWN = 1007
-        private const val DEL = 1008
+        const val ARROW_UP = 1000
+        const val ARROW_DOWN = 1001
+        const val ARROW_LEFT = 1002
+        const val ARROW_RIGHT = 1003
+        const val HOME = 1004
+        const val END = 1005
+        const val PAGE_UP = 1006
+        const val PAGE_DOWN = 1007
+        const val DEL = 1008
+        var ROWS: Short = 20
+        var COLUMNS: Short = 120
     }
 
     private var originalAttributes: StandardC.Termios? = null
-    private var rows: Short = 20
-    private var columns: Short = 120
     private var cursorX = 0
     private var cursorY = 1
 
     private var statusMessage = ""
 
     private var player: Person = Person(Position(2, 15), 0)
-    private var boxes: List<Box> = mutableListOf()
+    private var goldBag: List<GoldCoin> = mutableListOf()
 
     private var lastObjectTime: Instant = Instant.now()
 
@@ -54,15 +54,15 @@ class View {
         if (lastObjectTime.plusMillis(interval) > Instant.now()) {
             return
         }
-        val randomPosY = Random.nextInt(1, rows - 1)
-        boxes = boxes + Box(Position(118, randomPosY))
+        val randomPosY = Random.nextInt(1, ROWS - 1)
+        goldBag = goldBag + GoldCoin(Position(118, randomPosY))
         lastObjectTime = Instant.now()
     }
 
     private fun moveObjects() {
-        boxes.forEach {
+        goldBag.forEach {
             if (!it.move()) {
-                boxes = boxes - it
+                goldBag = goldBag - it
             }
 
         }
@@ -82,7 +82,7 @@ class View {
     }
 
     private fun drawFrame(builder: StringBuilder) {
-        for (i in 0 until rows) {
+        for (i in 0 until ROWS) {
             builder
                 .append(" ".repeat(120))
                 .append("\r\n")
@@ -93,18 +93,19 @@ class View {
         }
         player.draw(builder)
         player.drawName(builder, "ASH")
-        boxes.forEach {
+        goldBag.forEach {
             it.draw(builder)
         }
     }
 
     private fun drawStatusBar(builder: StringBuilder) {
-        val statusMessage = "Rows: $rows, Columns: $columns (X:$cursorX Y: $cursorY) Score=${player.score}"
+        val statusMessage =
+            "Rows: ${ROWS}, Columns: $COLUMNS (X:$cursorX Y: $cursorY) Score=${player.score}"
         builder
-            .append("\u001b[${rows + 1};1H")
+            .append("\u001b[${ROWS + 1};1H")
             .append("\u001b[20;7m")
             .append(statusMessage)
-            .append(" ".repeat(max(0, columns - statusMessage.length)))
+            .append(" ".repeat(max(0, COLUMNS - statusMessage.length)))
             .append("\u001b[0m")
     }
 
@@ -157,7 +158,7 @@ class View {
         if (key == 4) { //CTRL-D
             exit()
         } else if (arrayListOf(ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, HOME, END).contains(key)) {
-            moveCursor(key)
+            player.handleKey(key)
         } else {
             statusMessage = "$key  -> (${key.toChar()})"
         }
@@ -168,49 +169,6 @@ class View {
         print("\u001b[H")
         StandardC.INSTANCE.tcsetattr(StandardC.SYSTEM_OUT_FD, StandardC.TCSAFLUSH, originalAttributes)
         exitProcess(0)
-    }
-
-    private fun moveCursor(key: Int) {
-        when (key) {
-            ARROW_UP -> {
-                if (cursorY > 1) {
-                    cursorY--
-                }
-                if (player.position.posY > 1) {
-                    player.position.posY--
-                }
-            }
-
-            ARROW_DOWN -> {
-                if (cursorY < rows) {
-                    cursorY++
-                }
-                if (player.position.posY < rows - 1) {
-                    player.position.posY++
-                }
-            }
-
-            ARROW_LEFT -> {
-                if (cursorX > 0) {
-                    cursorX--
-                }
-                if (player.position.posX > 2) {
-                    player.position.posX--
-                }
-            }
-
-            ARROW_RIGHT -> {
-                if (cursorX < columns - 1) {
-                    cursorX++
-                }
-                if (player.position.posX < columns - 1) {
-                    player.position.posX++
-                }
-            }
-
-            HOME -> cursorX = 0
-            END -> cursorX = columns - 1
-        }
     }
 
     fun enableRawMode() {
@@ -230,10 +188,10 @@ class View {
     }
 
     fun countPoints() {
-        boxes.forEach {
+        goldBag.forEach {
             if (player.meets(it)) {
                 player.score(1)
-                boxes = boxes - it
+                goldBag = goldBag - it
             }
         }
     }

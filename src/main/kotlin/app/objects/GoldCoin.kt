@@ -3,14 +3,13 @@ package app.objects
 import app.Position
 import java.lang.StringBuilder
 
-class Box(
+class GoldCoin(
     val position: Position
 ) {
     fun draw(builder: StringBuilder) {
         erase(builder)
         builder
             .append("\u001b[${position.posY};${position.posX}H")
-//            .append("\u001b[7m")
             .append("\u001b[93m")
             .append("\u25E2\u25E3")
             .append("\u001b[${position.posY + 1};${position.posX}H")
