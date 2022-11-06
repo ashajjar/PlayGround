@@ -17,7 +17,7 @@ class GoldCoin(
             .append("\u001b[0m")
     }
 
-    fun erase(builder: StringBuilder) {
+    private fun erase(builder: StringBuilder) {
         builder
             .append("\u001b[${position.posY};${position.posX + 1}H")
             .append("\u001b[30m")

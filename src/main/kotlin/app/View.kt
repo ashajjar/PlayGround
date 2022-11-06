@@ -164,6 +164,7 @@ class View {
     private fun exit() {
         print("\u001b[2J")
         print("\u001b[H")
+        print("\u001b[?25h")
         StandardC.INSTANCE.tcsetattr(StandardC.SYSTEM_OUT_FD, StandardC.TCSAFLUSH, originalAttributes)
         exitProcess(0)
     }
