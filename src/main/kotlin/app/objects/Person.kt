@@ -6,14 +6,14 @@ import java.lang.StringBuilder
 
 class Person(
     val position: Position,
-    var score: Int
+    var score: Int,
 ) {
     fun draw(builder: StringBuilder) {
         builder
             //Head
             .append("\u001b[${position.posY};${position.posX - 1}H")
             .append("\u001b[7m")
-            .append("\u001b[91;40m")
+            .append("\u001b[36;40m")
             .append("* *")
             .append("\u001b[${position.posY + 1};${position.posX - 1}H")
             .append(" - ")

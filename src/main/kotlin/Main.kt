@@ -9,6 +9,7 @@ class Main {
         fun main(args: Array<String>) {
             val view = View()
             view.enableRawMode()
+            view.handleSplashScreen()
             thread {
                 while (!view.checkGameOver()) {
                     view.render()
