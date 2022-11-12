@@ -79,6 +79,7 @@ class View {
 
     private fun resetScreen(builder: StringBuilder) {
         builder.append("\u001b[2J")
+        builder.append("\u001b[3J")
     }
 
     private fun resetCursor(builder: StringBuilder) {
