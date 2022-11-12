@@ -142,7 +142,7 @@ class View {
 
                 in 97..122, in 65..90 -> {
                     if (keyCount <= 2) {
-                        values[keyCount] = key.toChar()
+                        values[keyCount] = key.toChar().uppercaseChar()
                         keyCount++
                     }
                 }
