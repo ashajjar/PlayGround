@@ -30,8 +30,8 @@ class Thing(
      */
     private val color: Int
         get() = when (type) {
-            ThingType.GOOD -> 92 // Green
-            ThingType.EVIL -> 91 // Red
+            ThingType.GOOD -> 51 - value// Green gradient
+            ThingType.EVIL -> 201 - value // Red gradient
         }
 
     fun draw(builder: StringBuilder) {
@@ -39,7 +39,7 @@ class Thing(
         erase(builder)
         builder
             .append("\u001b[${position.posY};${position.posX}H")
-            .append("\u001b[${color}m")
+            .append("\u001b[38:5:${color}m")
             .append("\u25E2\u25E3")
             .append("\u001b[${position.posY + 1};${position.posX}H")
             .append("\u25E5\u25E4")
