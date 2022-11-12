@@ -3,17 +3,20 @@ package app.objects
 import app.Position
 import app.View
 import java.lang.StringBuilder
+import kotlin.math.absoluteValue
 
 class Person(
     val position: Position,
     var score: Int,
 ) {
     fun draw(builder: StringBuilder) {
+        val color = if (score.absoluteValue > 230) 230 else score.absoluteValue + 17
+
         builder
             //Head
             .append("\u001b[${position.posY};${position.posX - 1}H")
             .append("\u001b[7m")
-            .append("\u001b[36;40m")
+            .append("\u001b[38;5;${color};48;5;${color}7m")
             .append("* *")
             .append("\u001b[${position.posY + 1};${position.posX - 1}H")
             .append(" - ")
