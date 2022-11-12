@@ -28,14 +28,14 @@ class View {
 
     private var originalAttributes: StandardC.Termios? = null
 
-    private var statusMessage = ""
-
     private var player: Person = Person(Position(2, 15), 0)
     private var thingsInView: List<Thing> = mutableListOf()
 
     private var lastObjectTime: Instant = Instant.now()
 
     private var missed = 0
+
+    private var userName = ""
 
     fun render() {
         val builder = StringBuilder()
@@ -59,7 +59,7 @@ class View {
         thingsInView =
             thingsInView +
                     Thing(
-                        Position(118, randomPosY),
+                        Position(COLUMNS.toInt() - Thing.WIDTH, randomPosY),
                         ThingType.randomType()
                     )
         lastObjectTime = Instant.now()
@@ -86,18 +86,79 @@ class View {
         builder.append("\u001b[?25l")
     }
 
+    fun handleSplashScreen() {
+
+        var key: Int
+        var keyCount = 0
+
+        val fileContent = View::class.java.getResource("/splash.txt")!!.readText()
+        val values = arrayListOf(Character.MIN_VALUE, Character.MIN_VALUE, Character.MIN_VALUE)
+        val nameLine = 12
+        val namePositions = arrayListOf(60, 63, 66)
+        while (userName == "") {
+            val builder = StringBuilder()
+            builder.append("\u001b[H")
+            resetScreen(builder)
+            fileContent.lines().forEach {
+                builder
+                    .append(it)
+                    .append("\r\n")
+            }
+
+            builder.append("\u001b[$nameLine;${namePositions[0]}H")
+
+            values
+                .filter { it != Char.MIN_VALUE }
+                .forEachIndexed { i, c ->
+                    builder
+                        .append("\u001b[1m")
+                        .append(c)
+                        .append("\u001b[0m")
+                    if (i < 2) {
+                        builder.append("\u001b[$nameLine;${namePositions[i + 1]}H")
+                    } else {
+                        builder.append("\u001b[$nameLine;${namePositions[2]}H")
+                    }
+                }
+
+            print(builder)
+
+            key = readKey()
+            when (key) {
+                4 -> exit()
+                127 -> {
+                    if (keyCount > 0) {
+                        values[--keyCount] = Character.MIN_VALUE
+
+                    }
+                }
+
+                13 -> {
+                    if (keyCount >= 2) {
+                        userName = values.joinToString(separator = "")
+                    }
+                }
+
+                in 97..122, in 65..90 -> {
+                    if (keyCount <= 2) {
+                        values[keyCount] = key.toChar()
+                        keyCount++
+                    }
+                }
+
+            }
+
+        }
+    }
+
     private fun drawFrame(builder: StringBuilder) {
         for (i in 0 until ROWS) {
             builder
-                .append(" ".repeat(120))
+                .append(" ".repeat(COLUMNS.toInt()))
                 .append("\r\n")
-
-            if (i > 15) {
-                builder.append("\u001b[0m")
-            }
         }
         player.draw(builder)
-        player.drawName(builder, "ASH")
+        player.drawName(builder, userName)
         thingsInView.forEach {
             it.draw(builder)
         }
@@ -165,8 +226,6 @@ class View {
             exit()
         } else if (arrayListOf(ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, HOME, END).contains(key)) {
             player.handleKey(key)
-        } else {
-            statusMessage = "$key  -> (${key.toChar()})"
         }
     }
 
