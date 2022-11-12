@@ -171,7 +171,7 @@ class View {
             .append("\u001b[${ROWS + 1};1H")
             .append("\u001b[20;7m")
             .append(statusMessage)
-            .append(" ".repeat(max(0, COLUMNS - statusMessage.length - 31)))
+            .append(" ".repeat(max(0, COLUMNS - statusMessage.length - 15)))
             .append("\u001B[40m(EXIT = CTRL+D)")
             .append("\u001b[0m")
     }
