@@ -11,18 +11,18 @@ class Main {
             view.enableRawMode()
             view.handleSplashScreen()
             thread {
-                while (!view.checkGameOver()) {
+                while (true) {
                     view.render()
                     Thread.sleep(50)
                 }
             }
             thread {
-                while (!view.checkGameOver()) {
+                while (true) {
                     view.countPoints()
                     Thread.sleep(50)
                 }
             }
-            while (!view.checkGameOver()) {
+            while (true) {
                 view.handleKey()
             }
         }

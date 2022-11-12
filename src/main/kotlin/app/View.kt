@@ -42,12 +42,28 @@ class View {
 
         resetScreen(builder)
         resetCursor(builder)
-        addRandomObjects()
-        moveObjects()
-        drawFrame(builder)
-        drawStatusBar(builder)
+
+        if (checkGameOver()) {
+            drawGameOver(builder)
+        } else {
+            addRandomObjects()
+            moveObjects()
+            drawFrame(builder)
+            drawStatusBar(builder)
+        }
 
         print(builder)
+    }
+
+    private fun drawGameOver(builder: StringBuilder) {
+        val fileContent = View::class.java.getResource("/gameover.txt")!!.readText()
+        builder.append("\u001b[H")
+        resetScreen(builder)
+        fileContent.lines().forEach {
+            builder
+                .append(it)
+                .append("\r\n")
+        }
     }
 
     private fun addRandomObjects() {
@@ -225,9 +241,20 @@ class View {
         val key = readKey()
         if (key == 4) { //CTRL-D
             exit()
+        } else if (key == 14) { // CTRL-N
+            if (checkGameOver()) {
+                restartGame()
+            }
         } else if (arrayListOf(ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, HOME, END).contains(key)) {
             player.handleKey(key)
         }
+    }
+
+    private fun restartGame() {
+        player = Person(Position(2, 15), 0)
+        thingsInView = mutableListOf()
+        lastObjectTime = Instant.now()
+        missed = 0
     }
 
     private fun exit() {
