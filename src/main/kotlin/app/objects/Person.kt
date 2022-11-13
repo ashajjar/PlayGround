@@ -10,7 +10,10 @@ class Person(
     var score: Int,
 ) {
     fun draw(builder: StringBuilder) {
-        val color = if (score.absoluteValue > 230) 230 else score.absoluteValue + 17
+        val personColorPalette = listOf(34, 70, 106, 142, 178, 214)
+        val color = personColorPalette.find {
+            score < it
+        } ?: 214
 
         builder
             //Head
