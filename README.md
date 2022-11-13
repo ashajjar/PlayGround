@@ -14,3 +14,9 @@ gradle fatJar && docker run --rm -it $(docker build -q .)
 ```shell
 ./gradlew fatJar && java -jar build/libs/Playground-1.0-standalone.jar
 ```
+
+## References
+* https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_(Control_Sequence_Introducer)_sequences
+* https://www.physics.udel.edu/~watson/scen103/ascii.html
+* https://vt100.net/docs/vt510-rm/chapter4.html
+* https://cloford.com/resources/charcodes/utf-8_geometric.htm
