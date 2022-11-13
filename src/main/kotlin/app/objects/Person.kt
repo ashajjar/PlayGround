@@ -3,7 +3,6 @@ package app.objects
 import app.Position
 import app.View
 import java.lang.StringBuilder
-import kotlin.math.absoluteValue
 
 class Person(
     val position: Position,
