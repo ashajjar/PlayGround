@@ -3,16 +3,14 @@
 ![Demo](https://user-images.githubusercontent.com/2855050/200191850-3e99c5c4-7440-4a3f-800d-cce61c86babe.gif)
 
 
-## Build
+## Build & Run
 
-```shell 
-gradle build
+### With Docker
+```shell
+gradle fatJar && docker run --rm -it $(docker build -q .) 
 ```
 
-## Run
-
-```shell 
-kotlin -classpath ./build/classes/kotlin/main:./libs/jna-5.12.1.jar Main  
+### Without Docker
+```shell
+./gradlew fatJar && java -jar build/libs/Playground-1.0-standalone.jar
 ```
-
-
