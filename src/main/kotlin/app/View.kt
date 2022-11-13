@@ -56,13 +56,22 @@ class View {
     }
 
     private fun drawGameOver(builder: StringBuilder) {
+        val colorPaletteOffset = 0
+        val splashColorPalette = listOf(
+            53, 54, 55, 56, 57,
+            89, 90, 91, 92, 93,
+            125, 126, 127, 128, 129,
+            161, 162, 163, 164, 165,
+        )
         val fileContent = View::class.java.getResource("/gameover.txt")!!.readText()
         builder.append("\u001b[H")
         resetScreen(builder)
-        fileContent.lines().forEach {
+        fileContent.lines().forEachIndexed { i, it ->
             builder
+                .append("\u001b[38;5;${splashColorPalette[i] + colorPaletteOffset}m")
                 .append(it)
                 .append("\r\n")
+                .append("\u001b[0m")
         }
     }
 
@@ -105,6 +114,13 @@ class View {
 
     fun handleSplashScreen() {
 
+        val colorPaletteOffset = 24
+        val splashColorPalette = listOf(
+            54, 55, 56, 57,
+            88, 89, 90, 91, 92, 93,
+            124, 125, 126, 127, 128, 129,
+            160, 161, 162, 163,
+        )
         var key: Int
         var keyCount = 0
 
@@ -116,10 +132,12 @@ class View {
             val builder = StringBuilder()
             builder.append("\u001b[H")
             resetScreen(builder)
-            fileContent.lines().forEach {
+            fileContent.lines().forEachIndexed { index, it ->
                 builder
+                    .append("\u001b[38;5;${splashColorPalette[index] + colorPaletteOffset};48;5;${splashColorPalette[index] + colorPaletteOffset}7m")
                     .append(it)
                     .append("\r\n")
+                    .append("\u001b[0m")
             }
 
             builder.append("\u001b[$nameLine;${namePositions[0]}H")
