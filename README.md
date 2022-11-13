@@ -1,6 +1,6 @@
 # PlayGround
 
-![Demo](https://user-images.githubusercontent.com/2855050/200191850-3e99c5c4-7440-4a3f-800d-cce61c86babe.gif)
+![Demo](https://user-images.githubusercontent.com/2855050/201500125-1040f15d-5d18-4e4c-8c63-1bbae4cc0a1f.gif)
 
 
 ## Build & Run
